@@ -65,4 +65,5 @@ If needed I will use other programming languages like Go or Julia.
 > - Demonstration of the product.
 
 
-## MVP
+## Minimum viable product
+
