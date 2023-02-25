@@ -3,33 +3,29 @@
 ## Table of contents
 1) Short description of the project
 2) Description of the used technologies
-3) Description of the idea
-4) Milestones
-5) MVP
+3) Milestones
+4) MVP
 
 
 ## Short description of the project 
-The project is a school project for the 'Computer aided modeling' course at the University of Szeged. The goal of the project is to implement two clustering algorithms based on a paper published by Judit Nagy-György, Norbert Bogya, Zsolt Vizi and Róbert Fazekas. The algorithms are already implemented in Matlab my goal is to implement them in python.
+>The project is a school project for the 'Computer aided modeling' course at the University of Szeged. The goal of the project is to implement two clustering algorithms based on a paper published by Judit Nagy-György, Norbert Bogya, Zsolt Vizi and Róbert Fazekas. The algorithms are already implemented in Matlab my goal is to implement them in python.
 
 ## Description of the used technologies
-During the project I'm planning to use several python libraries:
-- Matplotlib
-- Numpy
-- OpenCV
-- Pandas
-- Scipy
-- Sklearn
+> During the project I'm planning to use several python libraries:
+> - Matplotlib
+> - Numpy
+> - OpenCV
+> - Pandas
+> - Scipy
+> - Sklearn
 
-Development environment:
-- PyCharm
+> Development environment:
+> - PyCharm
 
-Version control system:
-- Github
+> Version control system:
+> - Github
 
-If needed I will use other programming languages like Go or Julia.
-
-## Short description of the idea
-
+>If needed I will use other programming languages like Go or Julia.
 
 
 ## Milestones
@@ -66,4 +62,10 @@ If needed I will use other programming languages like Go or Julia.
 
 
 ## Minimum viable product
+> The purpose of the minimum viable product is to show the customers a pre-release product which can also be tested at the market.
+
+> The MVP of this project should have the following abilities:
+> 1) The image processing is fully working and can turn a video of the road into readable data
+> 2) Both of the 2 algorithm can successfully cluster the different road objects on test videos
+> 3) The combined algorithm can successfully cluster different road objects on the videos and can plan the best route to avoid them with a success rate of 65% 
 
