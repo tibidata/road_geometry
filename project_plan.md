@@ -30,7 +30,8 @@
 
 ## Short description of the algorithms
 
-![](https://drive.google.com/file/d/1b06BIlQ2ReKf3ZaJb3X-Y4JFDm_BihDs/view?usp=share_link)
+<img src="https://drive.google.com/file/d/1b06BIlQ2ReKf3ZaJb3X-Y4JFDm_BihDs/view?usp=share_link"/>
+
 ## Milestones
 
 ### 2023.02.26
