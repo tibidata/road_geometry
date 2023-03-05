@@ -3,8 +3,9 @@
 ## Table of contents
 1) Short description of the project
 2) Description of the used technologies
-3) Milestones
-4) MVP
+3) Short description of the algorithms
+4) Milestones
+5) MVP
 
 
 ## Short description of the project 
@@ -27,7 +28,9 @@
 
 >If needed I will use other programming languages like Go or Julia.
 
+## Short description of the algorithms
 
+![](https://drive.google.com/file/d/1b06BIlQ2ReKf3ZaJb3X-Y4JFDm_BihDs/view?usp=share_link)
 ## Milestones
 
 ### 2023.02.26
