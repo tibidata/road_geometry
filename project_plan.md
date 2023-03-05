@@ -30,7 +30,7 @@
 
 ## Short description of the algorithms
 
-<img src="https://drive.google.com/file/d/1b06BIlQ2ReKf3ZaJb3X-Y4JFDm_BihDs/view?usp=share_link"/>
+<img src="https://lucid.app/publicSegments/view/798ed4dd-fdbf-4310-a9b0-ea1ffa01bdd5/image.png"/>
 
 ## Milestones
 
