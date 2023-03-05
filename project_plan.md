@@ -4,8 +4,10 @@
 1) Short description of the project
 2) Description of the used technologies
 3) Short description of the algorithms
-4) Milestones
-5) MVP
+4) Image processing
+5) Testing the algorithms
+6) Milestones
+7) MVP
 
 
 ## Short description of the project 
@@ -13,11 +15,13 @@
 
 ## Description of the used technologies
 > During the project I'm planning to use several python libraries:
+> - Imageio
 > - Matplotlib
 > - Numpy
 > - OpenCV
 > - Pandas
 > - Scipy
+> - Skimage
 > - Sklearn
 
 > Development environment:
@@ -30,7 +34,23 @@
 
 ## Short description of the algorithms
 
-<img src="https://drive.google.com/file/d/1b06BIlQ2ReKf3ZaJb3X-Y4JFDm_BihDs/view?usp=share_link"/>
+<img src="https://lucid.app/publicSegments/view/798ed4dd-fdbf-4310-a9b0-ea1ffa01bdd5/image.png"/>
+
+## Studies and papers
+
+> 1) [Clustering Algorithm Exploring Road Geometry in a Video-Based Driver Assistant System](https://www.researchgate.net/publication/337456737_Clustering_Algorithm_Exploring_Road_Geometry_in_a_Video-Based_Driver_Assistant_System)
+> 2) [Image Segmentation using Python’s scikit-image module](https://www.geeksforgeeks.org/image-segmentation-using-pythons-scikit-image-module/)
+> 3) [Grouping Line-segments using Eigenclustering](https://www.researchgate.net/publication/216360795_Grouping_Line-segments_using_Eigenclustering)
+> 4) [Scikit image documentation](https://scikit-image.org/docs/stable/index.html#)
+> 5) [Imageio documentation](https://imageio.readthedocs.io/en/stable/)
+
+## Image processing
+
+> Since the image processing algorithm mentioned in the original paper is an industrial secret I am going to use an [image segmentation algorithm](https://www.geeksforgeeks.org/image-segmentation-using-pythons-scikit-image-module/) (Segmentation by Thresholding – Manual Input) found on the internet combined with a self developed video sequentation algorithm to preprocess the video. The inputs of the algorithms are going to be optimised for the output of the preprocessing algorithm.  
+
+## Testing the algorithms
+
+> Since there is no available test data for the algorithm I will use video clips from the internet to test the algorithm.
 
 ## Milestones
 
@@ -63,6 +83,7 @@
 
 ### 2023.05.14.
 > - Demonstration of the product.
+
 
 
 ## Minimum viable product
