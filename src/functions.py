@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.cluster import KMeans
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.5f}".format(x)})
 
@@ -229,15 +230,24 @@ def clustering_with_threshold(adjacency_matrix: np.array, data: dict):
         c = c + 1
 
     for key in list(clusters_dict.keys()):
-        plt.plot([clusters_dict[key]['endpoint_1'][0],clusters_dict[key]['endpoint_2'][0]],
-                 [clusters_dict[key]['endpoint_1'][1],clusters_dict[key]['endpoint_2'][1]], c=clusters_dict[key]['color'])
+        plt.plot([clusters_dict[key]['endpoint_1'][0], clusters_dict[key]['endpoint_2'][0]],
+                 [clusters_dict[key]['endpoint_1'][1], clusters_dict[key]['endpoint_2'][1]],
+                 c=clusters_dict[key]['color'])
     plt.legend(['cluster 1', 'cluster 2', 'cluster 3'])
     plt.show()
 
     return clusters_dict
 
 
-def spectral_clustering(weight_matrix: np.array, num_clusters: int):
+def spectral_clustering(weight_matrix: np.array, num_clusters: int, data: dict):
+    """
+    Algorithm for the spectral clustering of the weight matrix.
+    :param weight_matrix: the matrix obtained from the data using the similarity function
+    :param num_clusters: number of clusters we want to obtain with the clustering
+    :param data: raw data used by the plotting
+    :return: list of the clusters where each the indices are the same as in the raw data
+    """
+
     """Diagonal matrix where the D_ij = the sum of the elements of the ith row of the weight matrix"""
     D = np.zeros_like(weight_matrix)
     for i in range(len(weight_matrix)):
@@ -251,4 +261,54 @@ def spectral_clustering(weight_matrix: np.array, num_clusters: int):
 
     eigen_values, eigen_vectors = np.linalg.eig(X)
 
-    return eigen_values, eigen_vectors
+    """first k eigen vectors where k = num_of_clusters"""
+
+    eigen_dict = {}
+
+    for i in range(len(eigen_values)):
+        eigen_dict[eigen_values[i]] = eigen_vectors[i]
+
+    first_k_eig_val_list = sorted(eigen_dict, reverse=True)[:num_clusters]
+
+    first_k_eig_vect_list = []
+
+    for i in range(len(first_k_eig_val_list)):
+        first_k_eig_vect_list.append(eigen_dict[first_k_eig_val_list[i]])
+
+    eigen_vector_matrix = np.array(first_k_eig_vect_list).T
+
+    """normalised eigen vector matrix"""
+
+    normalised_eigen_vector_matrix = np.zeros_like(eigen_vector_matrix)
+    for i in range(eigen_vector_matrix.shape[0]):
+        line_norm = np.linalg.norm(eigen_vector_matrix[i])
+
+        for j in range(eigen_vector_matrix.shape[1]):
+            normalised_eigen_vector_matrix[i, j] = eigen_vector_matrix[i, j] / line_norm
+
+    """K-Means clustering on the normalised eigen vector matrix"""
+
+    model = KMeans(n_clusters=num_clusters, random_state=0, n_init='auto')
+
+    clusters_list = model.fit_predict(normalised_eigen_vector_matrix)
+
+    """Plotting the clusters"""
+
+    color_list = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+
+    clusters_dict = {}
+    i = 0
+
+    for j in range(len(clusters_list)):
+        clusters_dict[i] = {'color': color_list[clusters_list[j]],
+                            'endpoint_1': data[list(data.keys())[j]]['endpoint_1'],
+                            'endpoint_2': data[list(data.keys())[j]]['endpoint_2']}
+        i = i + 1
+
+    for key in list(clusters_dict.keys()):
+        plt.plot([clusters_dict[key]['endpoint_1'][0], clusters_dict[key]['endpoint_2'][0]],
+                 [clusters_dict[key]['endpoint_1'][1], clusters_dict[key]['endpoint_2'][1]],
+                 c=clusters_dict[key]['color'])
+    plt.show()
+
+    return clusters_list
