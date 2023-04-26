@@ -112,8 +112,8 @@ def calculate_weight_matrix(data: dict, d_0: float, alpha_0: float, g_0: float):
 
 def calculate_adjacency_matrix(weight_matrix: np.array):
     """
-    :param weight_matrix:
-    :return:
+    :param weight_matrix: ndarray : Weight matrix calculated with the similarity function
+    :return: ndarray : Adjacency matrix
     """
 
     #  Non-zero elements of the weight matrix
@@ -140,4 +140,20 @@ def calculate_adjacency_matrix(weight_matrix: np.array):
     return adjacency_matrix
 
 
+def create_clusters_dict(labels: list, data: dict):
+    """
+    Function to create the cluster dictionary. Used for plotting
+    :param labels: list : cluster of the elements
+    :param data: dict : raw data
+    :return:
+    """
+    color_list = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
 
+    clusters_dict = {}
+
+    for i in range(len(labels)):
+        clusters_dict[i] = {'color': color_list[labels[i]],
+                            'endpoint_1': data[list(data.keys())[i]]['endpoint_1'],
+                            'endpoint_2': data[list(data.keys())[i]]['endpoint_2']}
+
+    return clusters_dict

@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
-import numpy as np
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
 from sklearn.cluster import SpectralClustering
 
-from src.functions import calculate_weight_matrix, calculate_adjacency_matrix
+from src.functions import calculate_weight_matrix, calculate_adjacency_matrix, create_clusters_dict
 
 
 class ClusteringModel:
@@ -10,7 +11,7 @@ class ClusteringModel:
     Class of the clustering model
     """
 
-    def __init__(self, data: dict, num_of_clusters: int = 0,
+    def __init__(self, data: dict, num_of_clusters: int = None,
                  d_0: float = 1000.0, alpha_0: float = 50.0, g_0: float = 200.0):
 
         """
@@ -20,6 +21,8 @@ class ClusteringModel:
         :param alpha_0: Real value added by the user to tune the working of the algorithm.
         :param g_0: Real value added by the user to tune the working of the algorithm.
         """
+        self.labels = None
+        self.clusters_dict = None
         self.data = data
         self.num_of_clusters = num_of_clusters
         self.g_0 = g_0
@@ -33,70 +36,21 @@ class ClusteringModel:
         Calculates the clusters in the adjacency matrix
         :return: Dictionary of the sections with cluster's color
         """
-        clusters = []
 
-        #  Creates the list of the clusters based on the adjacency matrix
+        graph = csr_matrix(self.adjacency_matrix)
+        n_components, labels = connected_components(csgraph=graph)
+        self.labels = labels
 
-        for i in range(len(self.adjacency_matrix)):
-            indices_list = list(np.nonzero(self.adjacency_matrix[i])[0])
-            if len(indices_list) == 0:
-                clusters.append([i])
-            else:
-
-                similarity_list = []
-                for j in range(len(indices_list)):
-                    similarity_list.append(indices_list[j])
-                similarity_list.append(i)
-
-                if sorted(similarity_list) not in clusters:
-                    clusters.append(sorted(similarity_list))
-
-        #  Merges the clusters with common elements
-
-        for cluster in clusters:
-
-            for other_cluster in clusters:
-
-                if other_cluster != cluster:
-
-                    if any(item in cluster for item in other_cluster):
-                        new_cluster = cluster + other_cluster
-                        clusters.append(new_cluster)
-
-                        if other_cluster in clusters:
-                            clusters.remove(other_cluster)
-                        if cluster in clusters:
-                            clusters.remove(cluster)
-
-        #  Removes the duplicate indices from the clusters
-        clusters_final = []
-
-        for cluster in clusters:
-            clusters_final.append(list(set(cluster)))
+        print(n_components)
 
         #  Plotting the clusters with different colors
 
         color_list = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
 
-        clusters_dict = {}
-        i = 0
-        c = 0
-        for cluster in clusters_final:
-            for index in cluster:
-                clusters_dict[i] = {'color': color_list[c],
-                                    'endpoint_1': self.data[list(self.data.keys())[index]]['endpoint_1'],
-                                    'endpoint_2': self.data[list(self.data.keys())[index]]['endpoint_2']}
-                i += 1
-            c += 1
+        self.clusters_dict = create_clusters_dict(labels=list(self.labels), data=self.data)
+        self.labels = labels
 
-        for key in list(clusters_dict.keys()):
-            plt.plot([clusters_dict[key]['endpoint_1'][0], clusters_dict[key]['endpoint_2'][0]],
-                     [clusters_dict[key]['endpoint_1'][1], clusters_dict[key]['endpoint_2'][1]],
-                     c=clusters_dict[key]['color'])
-        plt.legend(['cluster 1', 'cluster 2', 'cluster 3'])
-        plt.show()
-
-        return clusters_dict
+        return self.clusters_dict, self.labels, n_components
 
     def spectral_clustering(self):
         """
@@ -104,26 +58,38 @@ class ClusteringModel:
         :return: list of the clusters where each the indices are the same as in the raw data
         """
 
-        model = SpectralClustering(n_clusters=self.num_of_clusters)
+        model = SpectralClustering(n_clusters=self.num_of_clusters, affinity='precomputed')
 
-        clusters_list = model.fit_predict(self.weight_matrix)
+        self.labels = model.fit_predict(self.weight_matrix)
 
-        #  Plotting the clusters
+        self.clusters_dict = create_clusters_dict(data=self.data, labels=self.labels)
 
-        color_list = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+        return self.clusters_dict, self.labels
 
-        clusters_dict = {}
-        i = 0
+    def mixed_clustering(self):
+        """
+        Determining the number of clusters by using the threshold clustering, and using that as a parameter for
+        spectral clustering.
+        :return: clusters_dict, labels of clusters
+        """
+        clusters_dict, labels, self.num_of_clusters = self.clustering_with_threshold()
 
-        for j in range(len(clusters_list)):
-            clusters_dict[i] = {'color': color_list[clusters_list[j]],
-                                'endpoint_1': self.data[list(self.data.keys())[j]]['endpoint_1'],
-                                'endpoint_2': self.data[list(self.data.keys())[j]]['endpoint_2']}
-            i += 1
+        self.clusters_dict, self.labels = self.spectral_clustering()
 
-        for key in list(clusters_dict.keys()):
-            plt.plot([clusters_dict[key]['endpoint_1'][0], clusters_dict[key]['endpoint_2'][0]],
-                     [clusters_dict[key]['endpoint_1'][1], clusters_dict[key]['endpoint_2'][1]],
-                     c=clusters_dict[key]['color'])
-        plt.show()
-        return clusters_dict
+        return self.clusters_dict, self.labels
+
+    def plot_clusters(self):
+        """
+        Function to plot the predicted clusters. Raises exception if none of the models were ran before.
+        :return: None
+        """
+
+        if self.labels is None or self.clusters_dict is None:
+            raise Exception('Please run the model first to plot the results.')
+        else:
+            for key in list(self.clusters_dict.keys()):
+                plt.plot([self.clusters_dict[key]['endpoint_1'][0], self.clusters_dict[key]['endpoint_2'][0]],
+                         [self.clusters_dict[key]['endpoint_1'][1], self.clusters_dict[key]['endpoint_2'][1]],
+                         c=self.clusters_dict[key]['color'])
+
+            plt.show()

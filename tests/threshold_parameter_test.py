@@ -1,6 +1,6 @@
 import numpy as np
 from src.functions import calculate_weight_matrix, calculate_adjacency_matrix
-from test_data.test_data1 import test_data1
+from test_data.test_data1 import test_data2
 
 # Code snippet to test the optimal values for tuning the algorithm
 
@@ -21,7 +21,7 @@ for alpha in range(len(test_values)):
     for d in range(len(test_values)):
         for g in range(len(test_values)):
             weight_matrix = calculate_weight_matrix(d_0=test_values[d], alpha_0=test_values[alpha], g_0=test_values[g],
-                                                    data=test_data1)
+                                                    data=test_data2)
             adjacency_matrix = calculate_adjacency_matrix(weight_matrix)
             sum_difference = 0
             for i in range(len(adjacency_matrix)):
