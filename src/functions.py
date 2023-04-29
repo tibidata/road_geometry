@@ -1,3 +1,4 @@
+import itertools
 import math
 
 import numpy as np
@@ -94,20 +95,35 @@ def calculate_weight_matrix(data: dict, d_0: float, alpha_0: float, g_0: float):
     :return:  W weight matrix.
     """
 
-    sections = list(data.keys())
+    W = np.zeros((len(data), len(data)))
 
-    W = np.zeros((len(sections), len(sections)))
+    i = 0  #  row index of the weight matrix
+    j = 0  #  column index of the weight matrix
 
-    for i in range(len(sections)):
-        for j in range(len(sections)):
-            i1 = np.array(data[sections[i]]['endpoint_1'])
-            i2 = np.array(data[sections[i]]['endpoint_2'])
-            j1 = np.array(data[sections[j]]['endpoint_1'])
-            j2 = np.array(data[sections[j]]['endpoint_2'])
-            W[i, j] = calculate_similarity(d_0=d_0, alpha_0=alpha_0, g_0=g_0, i_end1=i1,
-                                           i_end2=i2, j_end1=j1, j_end2=j2)
+    x_prev = data[0]  #  first element of the data used for handling the row, column index changes
 
-    return W
+    for x, y in itertools.combinations(data, 2):
+
+        #  During the for loop both i and j starts from 0. We are using itertools.combinations which gives the
+        #  Combination of the elements of a list. [A,B,C] -> AB, AC, BC
+        #  With this method we get un upper triangular matrix with the weights, we will have to transpose it after
+        #  and add the 2 matrices together to get the weight matrix.
+
+        if x_prev != x:
+            #  When we finished comparing an element with the rest the row index increases.
+            i += 1
+            j = i + 1
+        else:
+            #  After comparing two elements the column index increases
+            j += 1
+
+        similarity = calculate_similarity(d_0=d_0, alpha_0=alpha_0, g_0=g_0,
+                                          i_end1=np.array(x[0]), i_end2=np.array(x[1]),
+                                          j_end1=np.array(y[0]), j_end2=np.array(y[1]))
+        W[i, j] = similarity
+        x_prev = x
+
+    return W.T + W
 
 
 def calculate_adjacency_matrix(weight_matrix: np.array):
@@ -140,7 +156,7 @@ def calculate_adjacency_matrix(weight_matrix: np.array):
     return adjacency_matrix
 
 
-def create_clusters_dict(labels: list, data: dict):
+def create_clusters_dict(labels: list, data: list):
     """
     Function to create the cluster dictionary. Used for plotting
     :param labels: list : cluster of the elements
@@ -153,7 +169,8 @@ def create_clusters_dict(labels: list, data: dict):
 
     for i in range(len(labels)):
         clusters_dict[i] = {'color': color_list[labels[i]],
-                            'endpoint_1': data[list(data.keys())[i]]['endpoint_1'],
-                            'endpoint_2': data[list(data.keys())[i]]['endpoint_2']}
+                            'endpoint_1': data[i][0],
+                            'endpoint_2': data[i][1]}
+        print(type(np.array(data[i][0])))
 
     return clusters_dict

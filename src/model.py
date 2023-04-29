@@ -11,7 +11,7 @@ class ClusteringModel:
     Class of the clustering model
     """
 
-    def __init__(self, data: dict, num_of_clusters: int = None,
+    def __init__(self, data: list, num_of_clusters: int = None,
                  d_0: float = 1000.0, alpha_0: float = 50.0, g_0: float = 200.0):
 
         """
@@ -48,6 +48,7 @@ class ClusteringModel:
         color_list = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
 
         self.clusters_dict = create_clusters_dict(labels=list(self.labels), data=self.data)
+
         self.labels = labels
 
         return self.clusters_dict, self.labels, n_components
@@ -80,14 +81,16 @@ class ClusteringModel:
 
     def plot_clusters(self):
         """
-        Function to plot the predicted clusters. Raises exception if none of the models were ran before.
+        Method to plot the predicted clusters. Raises exception if none of the models were ran before.
         :return: None
         """
 
         if self.labels is None or self.clusters_dict is None:
             raise Exception('Please run the model first to plot the results.')
         else:
+            print('plotting')
             for key in list(self.clusters_dict.keys()):
+                print(key)
                 plt.plot([self.clusters_dict[key]['endpoint_1'][0], self.clusters_dict[key]['endpoint_2'][0]],
                          [self.clusters_dict[key]['endpoint_1'][1], self.clusters_dict[key]['endpoint_2'][1]],
                          c=self.clusters_dict[key]['color'])
